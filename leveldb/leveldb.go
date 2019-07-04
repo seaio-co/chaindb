@@ -32,7 +32,7 @@ func Init(file string) *LevelDB {
 func NewDB(file string) (*LevelDB, error) {
 	// 打开数据库并定义相关参数
 	db, err := leveldb.OpenFile(file, &opt.Options{
-		CompactionTableSize: 1000 * opt.MiB,            // 定义数据文件最大存储
+		CompactionTableSize: 2 * opt.MiB,               // 定义数据文件最大存储
 		Filter:              filter.NewBloomFilter(10), // bloom过滤器
 	})
 	if _, corrupted := err.(*errors.ErrCorrupted); corrupted {
