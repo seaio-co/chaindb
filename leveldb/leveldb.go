@@ -1,7 +1,7 @@
 package leveldb
 
 import (
-	"github.com/phjt-go/chaindb"
+	"github.com/seaio-co/chaindb"
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/syndtr/goleveldb/leveldb/errors"
 	"github.com/syndtr/goleveldb/leveldb/filter"
