@@ -49,17 +49,17 @@ func NewDB(file string) (*LevelDB, error) {
 	return &LevelDB{fn: file, db: db}, nil
 }
 
-// 返回数据库路径
+// Path 返回数据库路径
 func (db *LevelDB) Path() string {
 	return db.fn
 }
 
-// 数据库写操作
+// Put 数据库写操作
 func (db *LevelDB) Put(key []byte, value []byte) error {
 	return db.db.Put(key, value, nil)
 }
 
-// 数据库读操作
+// Get 数据库读操作
 func (db *LevelDB) Get(key []byte) ([]byte, error) {
 	data, err := db.db.Get(key, nil)
 	if err != nil {
@@ -68,27 +68,27 @@ func (db *LevelDB) Get(key []byte) ([]byte, error) {
 	return data, nil
 }
 
-// 数据库删除操作
+// Del 数据库删除操作
 func (db *LevelDB) Del(key []byte) error {
 	return db.db.Delete(key, nil)
 }
 
-// 返回某KEY是否存在
+// Has 返回某KEY是否存在
 func (db *LevelDB) Has(key []byte) (bool, error) {
 	return db.db.Has(key, nil)
 }
 
-// 数据库迭代器
+// NewIterator 数据库迭代器
 func (db *LevelDB) NewIterator() iterator.Iterator {
 	return db.db.NewIterator(nil, nil)
 }
 
-// 返回数据库句柄
+// GetDB 返回数据库句柄
 func (db *LevelDB) GetDB() *leveldb.DB {
 	return db.db
 }
 
-// 关闭数据库
+// Close 关闭数据库
 func (db *LevelDB) Close() error {
 	if err := db.db.Close(); err != nil {
 		return err
@@ -103,7 +103,7 @@ type LdbBatch struct {
 	size  int
 }
 
-// 初始化批量存储
+// NewBatch 初始化批量存储
 func (db *LevelDB) NewBatch() chaindb.Batch {
 	return &LdbBatch{
 		db:    db.db,
@@ -111,19 +111,19 @@ func (db *LevelDB) NewBatch() chaindb.Batch {
 	}
 }
 
-// 写入暂存区
+// Put 写入暂存区
 func (b *LdbBatch) Put(key, value []byte) error {
 	b.batch.Put(key, value)
 	b.size += len(value)
 	return nil
 }
 
-// 批量写入数据库
+// Save 批量写入数据库
 func (b *LdbBatch) Save() error {
 	return b.db.Write(b.batch, nil)
 }
 
-// 获取暂存区数据大小
+// Size 获取暂存区数据大小
 func (b *LdbBatch) Size() int {
 	return b.size
 }
