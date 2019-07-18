@@ -10,6 +10,7 @@ import (
 	"sync"
 )
 
+// LevelDB 结构体
 type LevelDB struct {
 	fn string      // 数据库路径
 	db *leveldb.DB // 数据库句柄
@@ -19,6 +20,7 @@ var db *LevelDB
 var err error
 var once sync.Once
 
+// Init 初始化
 func Init(file string) *LevelDB {
 	once.Do(func() {
 		db, err = NewDB(file)
@@ -29,6 +31,7 @@ func Init(file string) *LevelDB {
 	return db
 }
 
+// NewDB 实例化方法
 func NewDB(file string) (*LevelDB, error) {
 	// 打开数据库并定义相关参数
 	db, err := leveldb.OpenFile(file, &opt.Options{
