@@ -1,21 +1,21 @@
 package memorydb
 
 import (
-	"sync"
 	"errors"
+	"sync"
 )
 
 // 结构体
 type MemDB struct {
-	db 		map[string][]byte
-	lock 	sync.RWMutex
+	db   map[string][]byte
+	lock sync.RWMutex
 }
 
 var mdb *MemDB
 var err error
 var once sync.Once
 
-// 单例模式初始化数据库
+// Init 单例模式初始化数据库
 func Init() *MemDB {
 	once.Do(func() {
 		mdb, err = newMemDB()
@@ -26,14 +26,14 @@ func Init() *MemDB {
 	return mdb
 }
 
-// 初始化内存存储
+// newMemDB 初始化内存存储
 func newMemDB() (*MemDB, error) {
 	return &MemDB{
 		db: make(map[string][]byte),
 	}, nil
 }
 
-// 写方法
+// Put 写方法
 func (db *MemDB) Put(key []byte, value []byte) error {
 	db.lock.Lock()
 	defer db.lock.Unlock()
@@ -42,20 +42,20 @@ func (db *MemDB) Put(key []byte, value []byte) error {
 	return nil
 }
 
-// 读方法
+// Get 读方法
 func (db *MemDB) Get(key []byte) ([]byte, error) {
 	db.lock.RLock()
 	defer db.lock.RUnlock()
 
-	if value,ok := db.db[string(key)]; ok {
+	if value, ok := db.db[string(key)]; ok {
 		return value, nil
 	}
 
 	return nil, errors.New("key is not found")
 }
 
-// 判断是否存在
-func (db *MemDB) Has(key []byte) (bool,error) {
+// Has 判断是否存在
+func (db *MemDB) Has(key []byte) (bool, error) {
 	db.lock.RLock()
 	defer db.lock.RUnlock()
 
@@ -65,7 +65,7 @@ func (db *MemDB) Has(key []byte) (bool,error) {
 	return false, nil
 }
 
-// 删除制定键值
+// Del 删除制定键值
 func (db *MemDB) Del(key []byte) error {
 	db.lock.Lock()
 	defer db.lock.Unlock()
@@ -75,7 +75,7 @@ func (db *MemDB) Del(key []byte) error {
 	return nil
 }
 
-// 获取所有键
+// GetAllKey 获取所有键
 func (db *MemDB) GetAllKey() [][]byte {
 	db.lock.RLock()
 	defer db.lock.RUnlock()
@@ -87,11 +87,12 @@ func (db *MemDB) GetAllKey() [][]byte {
 	return keys
 }
 
+// Path
 func (db *MemDB) Path() string {
 	return ""
 }
 
-// 关闭数据库(因内存数据库无需此操作，只做实现chaindb.Database的表示形式)
+// Close 关闭数据库
 func (db *MemDB) Close() error {
 	return nil
 }
